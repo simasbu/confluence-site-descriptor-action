@@ -1,7 +1,8 @@
 import * as core from '@actions/core'
 import * as builder from './buildSiteDescriptor'
 import * as fs from 'fs'
-import * as verify from './verifySpaces'
+import * as verify from './verify'
+import {SiteDescriptor} from './SiteDescriptor'
 
 async function run(): Promise<void> {
   try {

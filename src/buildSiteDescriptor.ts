@@ -1,12 +1,18 @@
 import * as fs from 'fs'
 import * as YAML from 'yaml'
+import {Attachment, SiteDescriptor} from './SiteDescriptor'
+
+interface FolderTree {
+  name: string
+  path: string
+  children: FolderTree[]
+  isDirectory?: boolean
+}
 
 /**
  * Builds a hierarchical representation of a directory.
- *
  */
 export function buildFolderTree(rootPath: string): FolderTree {
-  console.log('Starting builder')
   const root: FolderTree = {
     name: '',
     path: rootPath,
@@ -39,7 +45,6 @@ export function buildFolderTree(rootPath: string): FolderTree {
       }
     }
   }
-  console.log(root)
   return root
 }
 
@@ -79,8 +84,6 @@ export function buildSiteNode(
         return attachment
       })
   }
-  console.log(siteNode)
-
   return siteNode
 }
 

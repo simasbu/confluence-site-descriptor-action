@@ -44,8 +44,6 @@ Directory name will become a page name on confluence. Use underscores in places 
 `| └── My_Team/`  
 `│ | ├── README.md`
 
-Following
-
 ## Code in Main
 
 Install the dependencies
@@ -58,6 +56,12 @@ Build the typescript and package it for distribution
 
 ```bash
 $ npm run build && npm run package
+```
+
+Build, format, lint, package and test
+
+```bash
+$ npm run build && npm run format && npm run lint && npm run package && npm test
 ```
 
 Run the tests :heavy_check_mark:

@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/simasbu/confluence-site-descriptor/actions"><img alt="typescript-action status" src="https://github.com/simasbu/confluence-site-descriptor/workflows/build-test/badge.svg"></a>
+  <a href="https://github.com/simasbu/confluence-site-descriptor-action/actions"><img alt="typescript-action status" src="https://github.com/simasbu/confluence-site-descriptor-action/workflows/build-test/badge.svg"></a>
 </p>
 
 ## Description
@@ -12,7 +12,7 @@ Use the folowing code in the workflow:
 
 ```bash
 - name: Generate site.yaml
-  uses: simasbu/confluence-site-descriptor@main
+  uses: simasbu/confluence-site-descriptor-action@main
   with:
     localDirectory: "confluence"
     parentPageTitle: "Home"
@@ -44,8 +44,6 @@ Directory name will become a page name on confluence. Use underscores in places 
 `| └── My_Team/`  
 `│ | ├── README.md`
 
-Following
-
 ## Code in Main
 
 Install the dependencies
@@ -58,6 +56,12 @@ Build the typescript and package it for distribution
 
 ```bash
 $ npm run build && npm run package
+```
+
+Build, format, lint, package and test
+
+```bash
+$ npm run build && npm run format && npm run lint && npm run package && npm test
 ```
 
 Run the tests :heavy_check_mark:

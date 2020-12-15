@@ -1,4 +1,4 @@
-type SiteDescriptor = {
+export interface SiteDescriptor {
   uri: string
   parentPageTitle: string
   name: string
@@ -7,7 +7,7 @@ type SiteDescriptor = {
   attachments?: Attachment[]
 }
 
-type Attachment = {
+export interface Attachment {
   uri: string
   comment: string
   version: string

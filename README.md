@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/simasbu/confluence-site-descriptor/actions"><img alt="typescript-action status" src="https://github.com/simasbu/confluence-site-descriptor/workflows/build-test/badge.svg"></a>
+  <a href="https://github.com/simasbu/confluence-site-descriptor-action/actions"><img alt="typescript-action status" src="https://github.com/simasbu/confluence-site-descriptor-action/workflows/build-test/badge.svg"></a>
 </p>
 
 ## Description
@@ -12,7 +12,7 @@ Use the folowing code in the workflow:
 
 ```bash
 - name: Generate site.yaml
-  uses: simasbu/confluence-site-descriptor@main
+  uses: simasbu/confluence-site-descriptor-action@main
   with:
     localDirectory: "confluence"
     parentPageTitle: "Home"

@@ -1,19 +1,32 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as builder from './buildSiteDescriptor'
+import * as fs from 'fs'
+import * as verify from './verifySpaces'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    const localDirectory = core.getInput('localDirectory', {required: true})
+    const parentPageTitle = core.getInput('parentPageTitle', {required: true})
+    const homePageTitle = core.getInput('homePageTitle', {required: true})
+    const spaceKey = core.getInput('spaceKey', {required: true})
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    verify.verifySpaces(localDirectory)
 
-    core.setOutput('time', new Date().toTimeString())
+    const folderTree = builder.buildFolderTree(localDirectory)
+    folderTree.name = homePageTitle
+
+    let siteDescriptor: SiteDescriptor = {
+      uri: 'README.md',
+      parentPageTitle,
+      name: builder.replaceUnderscore(homePageTitle)
+    }
+    siteDescriptor = builder.buildSiteNode(folderTree, siteDescriptor)
+    fs.writeFileSync(
+      'site.yaml',
+      JSON.stringify({spaceKey, home: siteDescriptor})
+    )
   } catch (error) {
     core.setFailed(error.message)
   }
 }
-
 run()

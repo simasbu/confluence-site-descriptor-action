@@ -1,11 +1,21 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Confluence site builder'
+description: 'Builds site.yaml which can be used to deploy pages using bsorrentino/maven-confluence-plugin'
+author: 'Simonas Bunevicius'
 inputs:
-  milliseconds: # change this
+  localDirectory:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    default: 'confluence'
+    description: 'Directory that contains confluence pages'
+  parentPageTitle:
+    required: true
+    description: 'Parent page title'
+  homePageTitle:
+    required: true
+    description: 'Home page title'
+  spaceKey:
+    required: true
+    description: 'Space name'
 runs:
   using: 'node12'
   main: 'dist/index.js'
+  post: dist/index.js

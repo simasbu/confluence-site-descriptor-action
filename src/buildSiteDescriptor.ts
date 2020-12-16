@@ -92,7 +92,5 @@ export function buildSiteNode(
  * @param {string} text
  */
 export function replaceUnderscore(text: string): string {
-  return text
-  // Disable functionality temporarily
-  // return text.replace(/_/g, ' ')
+  return text.replace(/_/g, ' ').trim()
 }

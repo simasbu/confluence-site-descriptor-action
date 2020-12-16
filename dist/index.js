@@ -101,7 +101,7 @@ exports.buildSiteNode = buildSiteNode;
  * @param {string} text
  */
 function replaceUnderscore(text) {
-    return text.replace(/_/g, ' ');
+    return text.replace(/_/g, ' ').trim();
 }
 exports.replaceUnderscore = replaceUnderscore;
 

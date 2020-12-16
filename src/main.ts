@@ -1,33 +1,32 @@
-import * as core from '@actions/core'
-import * as builder from './buildSiteDescriptor'
-import * as fs from 'fs'
-import * as verify from './verify'
-import {SiteDescriptor} from './SiteDescriptor'
+import * as core from '@actions/core';
+import * as fs from 'fs';
+import { getDirectoryTree } from './directory-tree';
+import { getSiteDefinition, SiteDefinition } from './site-definition';
+import { checkForNamingViolations, replaceUnderscoresWithSpaces } from './utils';
 
 async function run(): Promise<void> {
   try {
-    const localDirectory = core.getInput('localDirectory', {required: true})
-    const parentPageTitle = core.getInput('parentPageTitle', {required: true})
-    const homePageTitle = core.getInput('homePageTitle', {required: true})
-    const spaceKey = core.getInput('spaceKey', {required: true})
+    const localDirectory = core.getInput('localDirectory', { required: true });
+    const parentPageTitle = core.getInput('parentPageTitle', { required: true });
+    const homePageTitle = core.getInput('homePageTitle', { required: true });
+    const spaceKey = core.getInput('spaceKey', { required: true });
 
-    verify.verifySpaces(localDirectory)
+    checkForNamingViolations(localDirectory);
 
-    const folderTree = builder.buildFolderTree(localDirectory)
-    folderTree.name = homePageTitle
+    const directoryTree = getDirectoryTree(localDirectory, homePageTitle);
 
-    let siteDescriptor: SiteDescriptor = {
+    const rootDefinition: SiteDefinition = {
       uri: 'README.md',
       parentPageTitle,
-      name: builder.replaceUnderscore(homePageTitle)
-    }
-    siteDescriptor = builder.buildSiteNode(folderTree, siteDescriptor)
-    fs.writeFileSync(
-      'site.yaml',
-      JSON.stringify({spaceKey, home: siteDescriptor})
-    )
+      name: replaceUnderscoresWithSpaces(homePageTitle),
+    };
+
+    const home = getSiteDefinition(directoryTree, rootDefinition);
+
+    fs.writeFileSync('site.yaml', JSON.stringify({ spaceKey, home }));
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error.message);
   }
 }
-run()
+
+run();

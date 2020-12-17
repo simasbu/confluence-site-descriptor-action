@@ -6,6 +6,9 @@ inputs:
     required: true
     default: 'confluence'
     description: 'Directory that contains confluence pages'
+  outputDirectory:
+    required: false
+    description: 'A directory for storing site.yaml file'
   parentPageTitle:
     required: true
     description: 'Parent page title'

@@ -1,12 +1,13 @@
 import * as core from '@actions/core'
 import * as builder from './buildSiteDescriptor'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import * as verify from './verify'
 import {SiteDescriptor} from './SiteDescriptor'
 
 async function run(): Promise<void> {
   try {
     const localDirectory = core.getInput('localDirectory', {required: true})
+    const outputDirectory = core.getInput('outputDirectory', {required: false})
     const parentPageTitle = core.getInput('parentPageTitle', {required: true})
     const homePageTitle = core.getInput('homePageTitle', {required: true})
     const spaceKey = core.getInput('spaceKey', {required: true})
@@ -22,8 +23,14 @@ async function run(): Promise<void> {
       name: builder.replaceUnderscore(homePageTitle)
     }
     siteDescriptor = builder.buildSiteNode(folderTree, siteDescriptor)
+
+    let outputPath = ''
+    if (outputDirectory) {
+      fs.ensureDirSync(outputDirectory)
+      outputPath = outputDirectory + '/'
+    }
     fs.writeFileSync(
-      'site.yaml',
+      outputPath + 'site.yaml',
       JSON.stringify({spaceKey, home: siteDescriptor})
     )
   } catch (error) {

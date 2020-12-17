@@ -144,12 +144,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(186));
 const builder = __importStar(__webpack_require__(151));
-const fs = __importStar(__webpack_require__(747));
+const fs = __importStar(__webpack_require__(893));
 const verify = __importStar(__webpack_require__(349));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const localDirectory = core.getInput('localDirectory', { required: true });
+            const outputDirectory = core.getInput('outputDirectory', { required: false });
             const parentPageTitle = core.getInput('parentPageTitle', { required: true });
             const homePageTitle = core.getInput('homePageTitle', { required: true });
             const spaceKey = core.getInput('spaceKey', { required: true });
@@ -162,7 +163,12 @@ function run() {
                 name: builder.replaceUnderscore(homePageTitle)
             };
             siteDescriptor = builder.buildSiteNode(folderTree, siteDescriptor);
-            fs.writeFileSync('site.yaml', JSON.stringify({ spaceKey, home: siteDescriptor }));
+            let outputPath = '';
+            if (outputDirectory) {
+                fs.ensureDirSync(outputDirectory);
+                outputPath = outputDirectory + '/';
+            }
+            fs.writeFileSync(outputPath + 'site.yaml', JSON.stringify({ spaceKey, home: siteDescriptor }));
         }
         catch (error) {
             core.setFailed(error.message);
@@ -7193,6 +7199,14 @@ exports.warnOptionDeprecation = warnOptionDeprecation;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = __webpack_require__(65).YAML
+
+
+/***/ }),
+
+/***/ 893:
+/***/ ((module) => {
+
+module.exports = eval("require")("fs-extra");
 
 
 /***/ }),

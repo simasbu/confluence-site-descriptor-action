@@ -70,7 +70,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const localDirectory = core.getInput('localDirectory', { required: true });
-            const outputDirectory = core.getInput('outputDirectory', { required: false });
+            const workingDirectory = core.getInput('workingDirectory', { required: false });
             const parentPageTitle = core.getInput('parentPageTitle', { required: true });
             const homePageTitle = core.getInput('homePageTitle', { required: true });
             const spaceKey = core.getInput('spaceKey', { required: true });
@@ -81,11 +81,11 @@ function run() {
                 parentPageTitle,
                 name: utils_1.replaceUnderscoresWithSpaces(homePageTitle),
             };
-            const home = site_definition_1.getSiteDefinition(directoryTree, rootDefinition);
+            const home = site_definition_1.getSiteDefinition(directoryTree, rootDefinition, workingDirectory);
             let outputPath = '';
-            if (outputDirectory) {
-                fs.ensureDirSync(outputDirectory);
-                outputPath = `${outputDirectory}/`;
+            if (workingDirectory) {
+                fs.ensureDirSync(workingDirectory);
+                outputPath = `${workingDirectory}/`;
             }
             fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));
         }
@@ -132,12 +132,13 @@ const utils_1 = __webpack_require__(918);
  * Generates the Site Definition object which will be consumed by the Confluence.
  * @param {DirectoryTree} directoryTree Directory tree object that needs to be mapped to the Site Definition object.
  * @param {SiteDefinition} siteDefinition Initial site definition.
+ * @param {string} workingDirectory A prefix of the path that will be removed from the final uri value.
  */
-function getSiteDefinition(directoryTree, siteDefinition) {
+function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
     if (directoryTree.type === 'directory') {
         const { children: childDirectories = [], name: directoryName, path: directoryPath, } = directoryTree;
         siteDefinition.name = utils_1.replaceUnderscoresWithSpaces(directoryName);
-        siteDefinition.uri = `${directoryPath}/README.md`;
+        siteDefinition.uri = resolveSiteDefinitionUri(directoryPath, workingDirectory);
         siteDefinition.labels = childDirectories
             .filter(({ name }) => name === 'labels.yaml')
             .map(({ path }) => fs.readFileSync(path, { encoding: 'utf8' }))
@@ -146,7 +147,7 @@ function getSiteDefinition(directoryTree, siteDefinition) {
         siteDefinition.children = childDirectories
             .filter(({ type }) => type === 'directory')
             .filter(({ name }) => name !== 'attachments')
-            .map(child => getSiteDefinition(child, {}));
+            .map(child => getSiteDefinition(child, {}, workingDirectory));
         siteDefinition.attachments = childDirectories
             .filter(({ type }) => type === 'directory')
             .filter(({ name }) => name === 'attachments')
@@ -162,6 +163,15 @@ function getSiteDefinition(directoryTree, siteDefinition) {
     return siteDefinition;
 }
 exports.getSiteDefinition = getSiteDefinition;
+function resolveSiteDefinitionUri(directoryPath, workingDirectory) {
+    if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+        const uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+        return uri.startsWith('/') ? uri.substring(1, uri.length) : uri;
+    }
+    else {
+        return `${directoryPath}/README.md`;
+    }
+}
 
 
 /***/ }),

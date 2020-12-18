@@ -22,10 +22,12 @@ interface Attachment {
  * Generates the Site Definition object which will be consumed by the Confluence.
  * @param {DirectoryTree} directoryTree Directory tree object that needs to be mapped to the Site Definition object.
  * @param {SiteDefinition} siteDefinition Initial site definition.
+ * @param {string} workingDirectory A prefix of the path that will be removed from the final uri value.
  */
 export function getSiteDefinition(
   directoryTree: DirectoryTree,
-  siteDefinition: SiteDefinition
+  siteDefinition: SiteDefinition,
+  workingDirectory?: string
 ): SiteDefinition {
   if (directoryTree.type === 'directory') {
     const {
@@ -35,7 +37,7 @@ export function getSiteDefinition(
     } = directoryTree;
 
     siteDefinition.name = replaceUnderscoresWithSpaces(directoryName);
-    siteDefinition.uri = `${directoryPath}/README.md`;
+    siteDefinition.uri = resolveSiteDefinitionUri(directoryPath, workingDirectory);
 
     siteDefinition.labels = childDirectories
       .filter(({ name }) => name === 'labels.yaml')
@@ -46,7 +48,7 @@ export function getSiteDefinition(
     siteDefinition.children = childDirectories
       .filter(({ type }) => type === 'directory')
       .filter(({ name }) => name !== 'attachments')
-      .map(child => getSiteDefinition(child, {} as SiteDefinition));
+      .map(child => getSiteDefinition(child, {} as SiteDefinition, workingDirectory));
 
     siteDefinition.attachments = childDirectories
       .filter(({ type }) => type === 'directory')
@@ -63,4 +65,13 @@ export function getSiteDefinition(
   }
 
   return siteDefinition;
+}
+
+function resolveSiteDefinitionUri(directoryPath: string, workingDirectory?: string): string {
+  if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+    const uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+    return uri.startsWith('/') ? uri.substring(1, uri.length) : uri;
+  } else {
+    return `${directoryPath}/README.md`;
+  }
 }

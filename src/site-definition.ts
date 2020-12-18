@@ -35,19 +35,9 @@ export function getSiteDefinition(
       name: directoryName,
       path: directoryPath,
     } = directoryTree;
-    console.log(directoryPath);
+
     siteDefinition.name = replaceUnderscoresWithSpaces(directoryName);
-    if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-      siteDefinition.uri = `${directoryPath.substr(
-        workingDirectory.length,
-        directoryPath.length
-      )}/README.md`;
-      siteDefinition.uri = siteDefinition.uri.startsWith('/')
-        ? siteDefinition.uri.substring(1, siteDefinition.uri.length)
-        : siteDefinition.uri;
-    } else {
-      siteDefinition.uri = `${directoryPath}/README.md`;
-    }
+    siteDefinition.uri = resolveSiteDefinitionUri(directoryPath, workingDirectory);
 
     siteDefinition.labels = childDirectories
       .filter(({ name }) => name === 'labels.yaml')
@@ -75,4 +65,13 @@ export function getSiteDefinition(
   }
 
   return siteDefinition;
+}
+
+function resolveSiteDefinitionUri(directoryPath: string, workingDirectory?: string): string {
+  if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+    let uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+    return uri.startsWith('/') ? uri.substring(1, uri.length) : uri;
+  } else {
+    return `${directoryPath}/README.md`;
+  }
 }

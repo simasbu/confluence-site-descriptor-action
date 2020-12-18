@@ -28,7 +28,6 @@ async function run(): Promise<void> {
       fs.ensureDirSync(workingDirectory);
       outputPath = `${workingDirectory}/`;
     }
-    console.log(JSON.stringify({ spaceKey, home }));
     fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));
   } catch (error) {
     core.setFailed(error.message);

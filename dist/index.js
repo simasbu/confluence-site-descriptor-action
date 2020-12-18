@@ -87,7 +87,6 @@ function run() {
                 fs.ensureDirSync(workingDirectory);
                 outputPath = `${workingDirectory}/`;
             }
-            console.log(JSON.stringify({ spaceKey, home }));
             fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));
         }
         catch (error) {
@@ -138,17 +137,8 @@ const utils_1 = __webpack_require__(918);
 function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
     if (directoryTree.type === 'directory') {
         const { children: childDirectories = [], name: directoryName, path: directoryPath, } = directoryTree;
-        console.log(directoryPath);
         siteDefinition.name = utils_1.replaceUnderscoresWithSpaces(directoryName);
-        if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-            siteDefinition.uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
-            siteDefinition.uri = siteDefinition.uri.startsWith('/')
-                ? siteDefinition.uri.substring(1, siteDefinition.uri.length)
-                : siteDefinition.uri;
-        }
-        else {
-            siteDefinition.uri = `${directoryPath}/README.md`;
-        }
+        siteDefinition.uri = resolveSiteDefinitionUri(directoryPath, workingDirectory);
         siteDefinition.labels = childDirectories
             .filter(({ name }) => name === 'labels.yaml')
             .map(({ path }) => fs.readFileSync(path, { encoding: 'utf8' }))
@@ -173,6 +163,15 @@ function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
     return siteDefinition;
 }
 exports.getSiteDefinition = getSiteDefinition;
+function resolveSiteDefinitionUri(directoryPath, workingDirectory) {
+    if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+        let uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+        return uri.startsWith('/') ? uri.substring(1, uri.length) : uri;
+    }
+    else {
+        return `${directoryPath}/README.md`;
+    }
+}
 
 
 /***/ }),

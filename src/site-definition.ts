@@ -41,6 +41,9 @@ export function getSiteDefinition(
         workingDirectory.length,
         directoryPath.length
       )}/README.md`;
+      siteDefinition.uri = siteDefinition.uri.startsWith('/')
+        ? siteDefinition.uri.substring(1, siteDefinition.uri.length)
+        : siteDefinition.uri;
     } else {
       siteDefinition.uri = `${directoryPath}/README.md`;
     }

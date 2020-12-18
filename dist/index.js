@@ -141,6 +141,9 @@ function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
         siteDefinition.name = utils_1.replaceUnderscoresWithSpaces(directoryName);
         if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
             siteDefinition.uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+            siteDefinition.uri = siteDefinition.uri.startsWith('/')
+                ? siteDefinition.uri.substring(1, siteDefinition.uri.length)
+                : siteDefinition.uri;
         }
         else {
             siteDefinition.uri = `${directoryPath}/README.md`;

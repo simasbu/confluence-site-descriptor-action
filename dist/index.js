@@ -81,12 +81,13 @@ function run() {
                 parentPageTitle,
                 name: utils_1.replaceUnderscoresWithSpaces(homePageTitle),
             };
-            const home = site_definition_1.getSiteDefinition(directoryTree, rootDefinition);
+            const home = site_definition_1.getSiteDefinition(directoryTree, rootDefinition, outputDirectory + '/');
             let outputPath = '';
             if (outputDirectory) {
                 fs.ensureDirSync(outputDirectory);
                 outputPath = `${outputDirectory}/`;
             }
+            console.log(JSON.stringify({ spaceKey, home }));
             fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));
         }
         catch (error) {
@@ -133,11 +134,16 @@ const utils_1 = __webpack_require__(918);
  * @param {DirectoryTree} directoryTree Directory tree object that needs to be mapped to the Site Definition object.
  * @param {SiteDefinition} siteDefinition Initial site definition.
  */
-function getSiteDefinition(directoryTree, siteDefinition) {
+function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
     if (directoryTree.type === 'directory') {
         const { children: childDirectories = [], name: directoryName, path: directoryPath, } = directoryTree;
         siteDefinition.name = utils_1.replaceUnderscoresWithSpaces(directoryName);
-        siteDefinition.uri = `${directoryPath}/README.md`;
+        if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+            siteDefinition.uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+        }
+        else {
+            siteDefinition.uri = `${directoryPath}/README.md`;
+        }
         siteDefinition.labels = childDirectories
             .filter(({ name }) => name === 'labels.yaml')
             .map(({ path }) => fs.readFileSync(path, { encoding: 'utf8' }))
@@ -146,7 +152,7 @@ function getSiteDefinition(directoryTree, siteDefinition) {
         siteDefinition.children = childDirectories
             .filter(({ type }) => type === 'directory')
             .filter(({ name }) => name !== 'attachments')
-            .map(child => getSiteDefinition(child, {}));
+            .map(child => getSiteDefinition(child, {}, workingDirectory));
         siteDefinition.attachments = childDirectories
             .filter(({ type }) => type === 'directory')
             .filter(({ name }) => name === 'attachments')

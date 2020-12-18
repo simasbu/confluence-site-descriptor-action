@@ -17,7 +17,7 @@ test('success flow', () => {
 
 test('success flow with output directory', () => {
   process.env['INPUT_LOCALDIRECTORY'] = 'src';
-  process.env['INPUT_OUTPUTDIRECTORY'] = 'src/newage/somepage';
+  process.env['INPUT_OUTPUTDIRECTORY'] = 'src';
   process.env['INPUT_HOMEPAGETITLE'] = 'My title';
   process.env['INPUT_PARENTPAGETITLE'] = 'Home page title';
   process.env['INPUT_SPACEKEY'] = 'My space';

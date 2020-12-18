@@ -25,7 +25,8 @@ interface Attachment {
  */
 export function getSiteDefinition(
   directoryTree: DirectoryTree,
-  siteDefinition: SiteDefinition
+  siteDefinition: SiteDefinition,
+  workingDirectory?: string
 ): SiteDefinition {
   if (directoryTree.type === 'directory') {
     const {
@@ -35,7 +36,14 @@ export function getSiteDefinition(
     } = directoryTree;
 
     siteDefinition.name = replaceUnderscoresWithSpaces(directoryName);
-    siteDefinition.uri = `${directoryPath}/README.md`;
+    if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+      siteDefinition.uri = `${directoryPath.substr(
+        workingDirectory.length,
+        directoryPath.length
+      )}/README.md`;
+    } else {
+      siteDefinition.uri = `${directoryPath}/README.md`;
+    }
 
     siteDefinition.labels = childDirectories
       .filter(({ name }) => name === 'labels.yaml')
@@ -46,7 +54,7 @@ export function getSiteDefinition(
     siteDefinition.children = childDirectories
       .filter(({ type }) => type === 'directory')
       .filter(({ name }) => name !== 'attachments')
-      .map(child => getSiteDefinition(child, {} as SiteDefinition));
+      .map(child => getSiteDefinition(child, {} as SiteDefinition, workingDirectory));
 
     siteDefinition.attachments = childDirectories
       .filter(({ type }) => type === 'directory')

@@ -21,13 +21,14 @@ async function run(): Promise<void> {
       parentPageTitle,
       name: replaceUnderscoresWithSpaces(homePageTitle),
     };
-    const home = getSiteDefinition(directoryTree, rootDefinition);
+    const home = getSiteDefinition(directoryTree, rootDefinition, outputDirectory + '/');
 
     let outputPath = '';
     if (outputDirectory) {
       fs.ensureDirSync(outputDirectory);
       outputPath = `${outputDirectory}/`;
     }
+    console.log(JSON.stringify({ spaceKey, home }));
     fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));
   } catch (error) {
     core.setFailed(error.message);

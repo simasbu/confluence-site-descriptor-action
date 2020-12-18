@@ -165,7 +165,7 @@ function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
 exports.getSiteDefinition = getSiteDefinition;
 function resolveSiteDefinitionUri(directoryPath, workingDirectory) {
     if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-        let uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+        const uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
         return uri.startsWith('/') ? uri.substring(1, uri.length) : uri;
     }
     else {

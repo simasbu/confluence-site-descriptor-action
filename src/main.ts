@@ -21,7 +21,7 @@ async function run(): Promise<void> {
       parentPageTitle,
       name: replaceUnderscoresWithSpaces(homePageTitle),
     };
-    const home = getSiteDefinition(directoryTree, rootDefinition, outputDirectory + '/');
+    const home = getSiteDefinition(directoryTree, rootDefinition, outputDirectory);
 
     let outputPath = '';
     if (outputDirectory) {

@@ -34,7 +34,7 @@ export function getSiteDefinition(
       name: directoryName,
       path: directoryPath,
     } = directoryTree;
-
+    console.log(directoryPath);
     siteDefinition.name = replaceUnderscoresWithSpaces(directoryName);
     if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
       siteDefinition.uri = `${directoryPath.substr(

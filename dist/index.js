@@ -81,7 +81,7 @@ function run() {
                 parentPageTitle,
                 name: utils_1.replaceUnderscoresWithSpaces(homePageTitle),
             };
-            const home = site_definition_1.getSiteDefinition(directoryTree, rootDefinition, outputDirectory + '/');
+            const home = site_definition_1.getSiteDefinition(directoryTree, rootDefinition, outputDirectory);
             let outputPath = '';
             if (outputDirectory) {
                 fs.ensureDirSync(outputDirectory);
@@ -137,6 +137,7 @@ const utils_1 = __webpack_require__(918);
 function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
     if (directoryTree.type === 'directory') {
         const { children: childDirectories = [], name: directoryName, path: directoryPath, } = directoryTree;
+        console.log(directoryPath);
         siteDefinition.name = utils_1.replaceUnderscoresWithSpaces(directoryName);
         if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
             siteDefinition.uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;

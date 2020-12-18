@@ -22,6 +22,7 @@ interface Attachment {
  * Generates the Site Definition object which will be consumed by the Confluence.
  * @param {DirectoryTree} directoryTree Directory tree object that needs to be mapped to the Site Definition object.
  * @param {SiteDefinition} siteDefinition Initial site definition.
+ * @param {string} workingDirectory A prefix of the path that will be removed from the final uri value.
  */
 export function getSiteDefinition(
   directoryTree: DirectoryTree,

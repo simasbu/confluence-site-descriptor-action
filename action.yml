@@ -1,12 +1,13 @@
 name: 'Confluence site builder'
-description: 'Builds site.yaml which can be used to deploy pages using bsorrentino/maven-confluence-plugin'
+description:
+  'Builds site.yaml which can be used to deploy pages using bsorrentino/maven-confluence-plugin'
 author: 'Simonas Bunevicius'
 inputs:
   localDirectory:
     required: true
     default: 'confluence'
     description: 'Directory that contains confluence pages'
-  outputDirectory:
+  workingDirectory:
     required: false
     description: 'A directory for storing site.yaml file'
   parentPageTitle:

@@ -7,7 +7,7 @@ import { checkForNamingViolations, replaceUnderscoresWithSpaces } from './utils'
 async function run(): Promise<void> {
   try {
     const localDirectory = core.getInput('localDirectory', { required: true });
-    const outputDirectory = core.getInput('outputDirectory', { required: false });
+    const workingDirectory = core.getInput('workingDirectory', { required: false });
     const parentPageTitle = core.getInput('parentPageTitle', { required: true });
     const homePageTitle = core.getInput('homePageTitle', { required: true });
     const spaceKey = core.getInput('spaceKey', { required: true });
@@ -21,12 +21,12 @@ async function run(): Promise<void> {
       parentPageTitle,
       name: replaceUnderscoresWithSpaces(homePageTitle),
     };
-    const home = getSiteDefinition(directoryTree, rootDefinition, outputDirectory);
+    const home = getSiteDefinition(directoryTree, rootDefinition, workingDirectory);
 
     let outputPath = '';
-    if (outputDirectory) {
-      fs.ensureDirSync(outputDirectory);
-      outputPath = `${outputDirectory}/`;
+    if (workingDirectory) {
+      fs.ensureDirSync(workingDirectory);
+      outputPath = `${workingDirectory}/`;
     }
     console.log(JSON.stringify({ spaceKey, home }));
     fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));

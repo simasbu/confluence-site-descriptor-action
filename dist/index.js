@@ -173,9 +173,9 @@ function resolveSiteDefinitionUri(directoryPath, workingDirectory) {
     }
 }
 function substringWorkingDirectory(directoryPath, workingDirectory) {
-    const pathToRemove = `${workingDirectory}/`;
-    if (workingDirectory != null && directoryPath.startsWith(pathToRemove)) {
-        return directoryPath.substr(pathToRemove.length, directoryPath.length);
+    if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+        const newPath = directoryPath.substr(workingDirectory.length, directoryPath.length);
+        return newPath.startsWith('/') ? newPath.substring(1, newPath.length) : newPath;
     }
     else {
         return directoryPath;

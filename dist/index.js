@@ -153,7 +153,7 @@ function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
             .filter(({ name }) => name === 'attachments')
             .map(({ path }) => {
             const attachment = {
-                uri: substringWorkingDirectory(path, workingDirectory),
+                uri: path,
                 comment: 'files',
                 version: '1',
             };

@@ -55,7 +55,7 @@ export function getSiteDefinition(
       .filter(({ name }) => name === 'attachments')
       .map(({ path }) => {
         const attachment: Attachment = {
-          uri: substringWorkingDirectory(path, workingDirectory),
+          uri: path,
           comment: 'files',
           version: '1',
         };

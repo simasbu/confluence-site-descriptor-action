@@ -153,7 +153,7 @@ function getSiteDefinition(directoryTree, siteDefinition, workingDirectory) {
             .filter(({ name }) => name === 'attachments')
             .map(({ path }) => {
             const attachment = {
-                uri: path,
+                uri: substringWorkingDirectory(path, workingDirectory),
                 comment: 'files',
                 version: '1',
             };
@@ -173,8 +173,9 @@ function resolveSiteDefinitionUri(directoryPath, workingDirectory) {
     }
 }
 function substringWorkingDirectory(directoryPath, workingDirectory) {
-    if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-        return directoryPath.substr(workingDirectory.length, directoryPath.length);
+    const pathToRemove = `${workingDirectory}/`;
+    if (workingDirectory != null && directoryPath.startsWith(pathToRemove)) {
+        return directoryPath.substr(pathToRemove.length, directoryPath.length);
     }
     else {
         return directoryPath;

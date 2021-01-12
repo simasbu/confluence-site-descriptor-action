@@ -55,7 +55,7 @@ export function getSiteDefinition(
       .filter(({ name }) => name === 'attachments')
       .map(({ path }) => {
         const attachment: Attachment = {
-          uri: path,
+          uri: substringWorkingDirectory(path, workingDirectory),
           comment: 'files',
           version: '1',
         };
@@ -77,8 +77,9 @@ function resolveSiteDefinitionUri(directoryPath: string, workingDirectory?: stri
 }
 
 function substringWorkingDirectory(directoryPath: string, workingDirectory?: string): string {
-  if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-    return directoryPath.substr(workingDirectory.length, directoryPath.length);
+  const pathToRemove = `${workingDirectory}/`;
+  if (workingDirectory != null && directoryPath.startsWith(pathToRemove)) {
+    return directoryPath.substr(pathToRemove.length, directoryPath.length);
   } else {
     return directoryPath;
   }

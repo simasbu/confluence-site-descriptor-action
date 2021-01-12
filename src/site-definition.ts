@@ -55,7 +55,7 @@ export function getSiteDefinition(
       .filter(({ name }) => name === 'attachments')
       .map(({ path }) => {
         const attachment: Attachment = {
-          uri: resolveSiteDefinitionUri(path, workingDirectory),
+          uri: substringWorkingDirectory(path, workingDirectory),
           comment: 'files',
           version: '1',
         };
@@ -69,9 +69,17 @@ export function getSiteDefinition(
 
 function resolveSiteDefinitionUri(directoryPath: string, workingDirectory?: string): string {
   if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-    const uri = `${directoryPath.substr(workingDirectory.length, directoryPath.length)}/README.md`;
+    const uri = `${substringWorkingDirectory(directoryPath, workingDirectory)}/README.md`;
     return uri.startsWith('/') ? uri.substring(1, uri.length) : uri;
   } else {
     return `${directoryPath}/README.md`;
+  }
+}
+
+function substringWorkingDirectory(directoryPath: string, workingDirectory?: string): string {
+  if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
+    return directoryPath.substr(workingDirectory.length, directoryPath.length);
+  } else {
+    return directoryPath;
   }
 }

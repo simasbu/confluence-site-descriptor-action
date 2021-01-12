@@ -55,7 +55,7 @@ export function getSiteDefinition(
       .filter(({ name }) => name === 'attachments')
       .map(({ path }) => {
         const attachment: Attachment = {
-          uri: path,
+          uri: resolveSiteDefinitionUri(path, workingDirectory),
           comment: 'files',
           version: '1',
         };

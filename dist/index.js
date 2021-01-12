@@ -174,7 +174,8 @@ function resolveSiteDefinitionUri(directoryPath, workingDirectory) {
 }
 function substringWorkingDirectory(directoryPath, workingDirectory) {
     if (workingDirectory != null && directoryPath.startsWith(workingDirectory)) {
-        return directoryPath.substr(workingDirectory.length, directoryPath.length);
+        const newPath = directoryPath.substr(workingDirectory.length, directoryPath.length);
+        return newPath.startsWith('/') ? newPath.substring(1, newPath.length) : newPath;
     }
     else {
         return directoryPath;

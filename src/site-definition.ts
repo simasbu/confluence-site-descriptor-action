@@ -7,13 +7,14 @@ export interface SiteDefinition {
   uri: string;
   parentPageTitle: string;
   name: string;
-  labels?: [];
+  labels?: string[];
   children?: SiteDefinition[];
   attachments?: Attachment[];
 }
 
 interface Attachment {
   uri: string;
+  name: string;
   comment: string;
   version: string;
 }
@@ -31,37 +32,36 @@ export function getSiteDefinition(
 ): SiteDefinition {
   if (directoryTree.type === 'directory') {
     const {
-      children: childDirectories = [],
+      children: childEntities = [],
       name: directoryName,
       path: directoryPath,
     } = directoryTree;
 
     siteDefinition.name = replaceUnderscoresWithSpaces(directoryName);
+
     siteDefinition.uri = resolveSiteDefinitionUri(directoryPath, workingDirectory);
 
-    siteDefinition.labels = childDirectories
-      .filter(({ name }) => name === 'labels.yaml')
-      .map(({ path }) => fs.readFileSync(path, { encoding: 'utf8' }))
-      .map(yaml => YAML.parse(yaml))
-      .reduce((x, y) => x.concat(y), []);
+    const labelsYamlEntity = childEntities.find(({ name }) => name === 'labels.yaml');
 
-    siteDefinition.children = childDirectories
+    if (labelsYamlEntity) {
+      const labelsFile = fs.readFileSync(labelsYamlEntity.path, { encoding: 'utf8' });
+
+      siteDefinition.labels = YAML.parse(labelsFile);
+    }
+
+    siteDefinition.children = childEntities
       .filter(({ type }) => type === 'directory')
       .filter(({ name }) => name !== 'attachments')
       .map(child => getSiteDefinition(child, {} as SiteDefinition, workingDirectory));
 
-    siteDefinition.attachments = childDirectories
-      .filter(({ type }) => type === 'directory')
-      .filter(({ name }) => name === 'attachments')
-      .map(({ path }) => {
-        const attachment: Attachment = {
-          uri: substringWorkingDirectory(path, workingDirectory),
-          comment: 'files',
-          version: '1',
-        };
+    const attachmentsDirectory = childEntities.find(({ name }) => name === 'attachments');
 
-        return attachment;
-      });
+    siteDefinition.attachments = attachmentsDirectory?.children?.map(({ path, name, type }) => ({
+      uri: substringWorkingDirectory(path, workingDirectory),
+      name,
+      comment: type,
+      version: '1',
+    }));
   }
 
   return siteDefinition;

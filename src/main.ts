@@ -24,10 +24,12 @@ async function run(): Promise<void> {
     const home = getSiteDefinition(directoryTree, rootDefinition, workingDirectory);
 
     let outputPath = '';
+
     if (workingDirectory) {
       fs.ensureDirSync(workingDirectory);
       outputPath = `${workingDirectory}/`;
     }
+
     fs.writeFileSync(`${outputPath}site.yaml`, JSON.stringify({ spaceKey, home }));
   } catch (error) {
     core.setFailed(error.message);
